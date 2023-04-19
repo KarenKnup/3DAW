@@ -13,42 +13,6 @@
   <input type="submit" value="Criar nova disciplina">
   </form>
 
-  
-  <h1>Listar disciplinas</h1>
-  <?php
-  $arqDisc=fopen(filename: "disciplinas.txt", mode:"r") or die("Erro ao criar arquivo"); 
-  echo fgets($arqDisc);
-  $cabecalho = explode(separator:";",fgets($arqDisc));
-  echo $cabecalho[0];
-  echo "<br>";
-  echo fgets($arqDisc);
-  ?>
-  <table style="border: 1px solid">
-    <tr>
-      <th style="border: 1px solid"><?php $cabecalho[0] ?></th>
-      <th style="border: 1px solid"><?php $cabecalho[1] ?></th>
-      <th style="border: 1px solid"><?php $cabecalho[2] ?></th>
-    </tr>
-    <tr>
-      <?php
-      //td
-      //while fget, explode linha EOF 
-      while(!feof($arqDisc)){
-      //echo fgets($arqDisc);
-      $c = explode(separator:";",fgets($arqDisc));
-      echo "<td>"
-      echo $c[0];
-      echo" </td>";
-      echo "<td>"
-      echo $c[1];
-      echo" </td>";
-      echo "<td>"
-      echo $c[2];
-      echo" </td> <br>";
-      }
-      ?>
-    </tr>
-  </table>
 </body>
 
 </html>
