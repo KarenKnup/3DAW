@@ -27,10 +27,15 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 <html>
 
 <head>
+  <style>
+    th{
+      border: 1px solid;
+      }
+  </style>
 </head>
 
 <body>
-  <h1>Criar 9 disciplinas</h1>
+  <h1>Criar nova disciplina</h1>
   <form action="FormDisciplina.php" method="POST">
     Nome: <input type="text" name="nome"> <br>
     Sigla: <input type="text" name="sigla"> <br>
@@ -38,6 +43,35 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
   <input type="submit" value="Criar nova disciplina">
   </form>
 
+   <hr>
+   <h1>Listar Disciplinas</h1> 
+    <?php
+      $Disciplinas = fopen ("disciplinas.txt", "r") or die ("Erro ao ler arquivo!");
+      $cabecalho = explode(";", fgets($Disciplinas));
+    ?>
+  
+  <table>
+     <tr>
+      <th class="th"> <?php echo $cabecalho[0] ?> </th>
+      <th class="th"> <?php echo $cabecalho[1] ?> </th>
+      <th class="th"> <?php echo $cabecalho[2] ?> </th>
+    </tr>
+    <?php
+       while(!feof($Disciplinas)){
+         $c = explode(";", fgets($Disciplinas));
+         if(!empty($c[0]) && !empty($c[1]) && !empty($c[2])){   
+            echo "<tr>";
+                for($i=0; $i<count($c); $i++){
+                  echo "<th>";
+                  echo $c[$i];
+                  echo "</th>";
+                }
+            echo "</tr>"; 
+         }
+       }
+        fclose($Disciplinas);
+    ?>
+  </table>
 
 </body>
 
