@@ -19,7 +19,7 @@
     $Alunos = fopen ("alunos.txt", "r") or die ("Erro ao ler arquivo!");
         while(!feof($Alunos)){
           $c = explode(";", fgets($Alunos));
-          if($c[2] == 2){ #usar $mat aqui
+          if($c[2] == $mat){
             $nome=$c[0];
             $cpf=$c[1];
             $data=$c[3];
