@@ -1,7 +1,7 @@
 <?php
 $Alunos = fopen ("alunos.txt", "r") or die ("Erro ao ler arquivo!");
-    if(!(file_exists("temp.txt"))){
-      $temp=fopen(filename: "temp.txt", mode:"a") or die("Erro ao criar arquivo!");
+   
+      $temp=fopen(filename: "temp.txt", mode:"w+") or die("Erro ao criar arquivo!");
       $c = explode(";", fgets($Alunos));
       while(!feof($Alunos)){
         $linha = $c[0] . ";" . $c[1] . ";" . $c[2] . ";" . $c[3];
@@ -10,7 +10,7 @@ $Alunos = fopen ("alunos.txt", "r") or die ("Erro ao ler arquivo!");
       }
       
       fclose($temp);
-    } 
+    
      
     fclose($Alunos);
 ?>
