@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Deletar Aluno</title>
+    <script>
+        function EnviarAluno() {
+            // Obter os valores dos campos de entrada
+			let mat = document.getElementById("mat").value;
+
+            // Criar um objeto XMLHttpRequest para fazer a requisição
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                // Verificar o estado da requisição e o status da resposta
+                if (this.readyState == 4 && this.status == 200) {
+                    // Atualizar o elemento HTML com a resposta recebida
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else if (this.readyState < 4) {
+                    // Ainda carregando a resposta
+                    console.log("3: " + this.readyState);
+                } else {
+                    // A requisição falhou
+                    console.log("Requisicao falhou: " + this.status);
+                }
+            }
+
+            // Construir a URL da requisição com os parâmetros
+            let url = "http://localhost/3DAW/Alunos.Javascript/remove_aluno.php";
+            let params = "mat=" + encodeURIComponent(mat);
+            
+            // Enviar a requisição GET para a URL com os parâmetros
+            xmlhttp.open("GET", url + "?" + params);
+            xmlhttp.send();
+        }
+
+        function ValidaForm() {
+            // Obter os valores dos campos de entrada
+			let mat = document.getElementById("mat").value;
+            let msg = "";
+
+            // Validar os campos de entrada
+            if (mat == "") {
+                msg = "Matrícula não preenchida. <br>";
+            } 
+
+            // Exibir a mensagem de validação no elemento HTML
+            document.getElementById("msg").innerHTML = msg;
+			
+			// Verificar se a validação passou e chamar a função EnviarAluno() se não houver mensagens de erro
+			if (msg == ""){
+				return EnviarAluno();
+			}
+        }
+    </script>
+</head>
+<body>
+<h1>Deletar Aluno</h1>
+<br>
+<a href="inclui_aluno.html">Inserir Aluno</a><br>
+<a href="alterar.html">Alterar Aluno</a><br>
+<a href="ler_todos.php">Listar Alunos</a><br>
+<a href="exibe1.html">Listar Aluno</a><br>
+<a href="deletar.html">Excluir Aluno</a><br>
+<br>
+<form action="" method=POST name="formAluno" id="formAluno">
+	Matricula do aluno a ser removido: <input type="text" name="mat" id="mat" required> <br>
+    <input type="button" value="Remover aluno" onclick="ValidaForm();">
+</form>
+<p id="msg"></p>
+<br>
+</body>
+</html>
