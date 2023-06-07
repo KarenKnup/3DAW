@@ -90,23 +90,92 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&family=Syncopate:wght@700&display=swap" rel="stylesheet">
-  </head>
+	
+	<script>		
+        function EnviarPerguntas() {
+            // Obter os valores dos campos de entrada
+            let pergunta = document.getElementById("pergunta").value;
+            let pergunta2 = document.getElementById("pergunta2").value;
+            let r1 = document.getElementById("r1").value;
+            let r2 = document.getElementById("r2").value;
+            let r3 = document.getElementById("r3").value;
+            let r4 = document.getElementById("r4").value;
+            let r5 = document.getElementById("r5").value;
+            let r6 = document.getElementById("r6").value;
+
+            // Criar um objeto XMLHttpRequest para fazer a requisição
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                // Verificar o estado da requisição e o status da resposta
+                if (this.readyState == 4 && this.status == 200) {
+                    // Atualizar o elemento HTML com a resposta recebida
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else if (this.readyState < 4) {
+                    // Ainda carregando a resposta
+                    console.log("3: " + this.readyState);
+                } else {
+                    // A requisição falhou
+                    console.log("Requisicao falhou: " + this.status);
+                }
+            }
+
+            // Construir a URL da requisição com os parâmetros
+            let url = "http://localhost/3DAW/AV1/form_altera_mult.php";
+            let params = "pergunta=" + encodeURIComponent(pergunta)+"&pergunta2=" + encodeURIComponent(pergunta2) + "&r1=" + encodeURIComponent(r1) + "&r2=" + encodeURIComponent(r2)+"&r3=" + encodeURIComponent(r3)+"&r4=" + encodeURIComponent(r4)+"&r5=" + encodeURIComponent(r5)+"&r6=" + encodeURIComponent(r6);
+            
+            // Enviar a requisição GET para a URL com os parâmetros
+            xmlhttp.open("GET", url + "?" + params);
+            xmlhttp.send();
+        }
+
+        function ValidaForm() {
+            // Obter os valores dos campos de entrada
+            let pergunta = document.getElementById("pergunta").value;
+            let pergunta2 = document.getElementById("pergunta2").value;
+            let r1 = document.getElementById("r1").value;
+            let r2 = document.getElementById("r2").value;
+            let r3 = document.getElementById("r3").value;
+            let r4 = document.getElementById("r4").value;
+            let r5 = document.getElementById("r5").value;
+            let r6 = document.getElementById("r6").value;
+            let msg = "";
+
+            // Validar os campos de entrada
+            if (pergunta == "" || pergunta2 == "") {
+                msg = "Pergunta não preenchida. <br>";
+            } else {
+                if(r1 == "" || r2 == "" || r3 == "" || r4 == "" || r5 == "" || r6 == ""){
+                    msg = "Resposta não preenchida. <br>";
+                } 
+            }
+
+            // Exibir a mensagem de validação no elemento HTML
+            document.getElementById("msg").innerHTML = msg;
+			
+			// Verificar se a validação passou e chamar a função EnviarAluno() se não houver mensagens de erro
+			if (msg == ""){
+				return EnviarPerguntas();
+			}
+        }
+    </script>
+ </head>
   
   <body>
   <br>
     <center><h1 style="font-family: 'Syncopate', sans-serif; color: white;">GAME PROJECT</h1>
 	<center><h2 style="color:lightskyblue;">➜ Alterar pergunta e resposta de múltipla escolha</h2></center>
-    <form action="form_altera_mult.php" method="POST">
-    <p>Pergunta a ser alterada:</p> <input type="text" name="pergunta" aria-required="true" required> <br><hr>
-    <h3 style="color:red;">    Novos cadastro: </h3>
-    <p>Pergunta:</p> <input type="text" name="pergunta2" aria-required="true" required> <br>
-		<p>Resposta 1:</p> <input type="text" name="r1" aria-required="true" required> <br>
-    <p>Resposta 2:</p> <input type="text" name="r2" aria-required="true" required> <br>
-		<p>Resposta 3:</p> <input type="text" name="r3" aria-required="true" required> <br>
-		<p>Resposta 4: </p><input type="text" name="r4" aria-required="true" required> <br>
-		<p>Resposta 5: </p><input type="text" name="r5" aria-required="true" required> <br>
-    <p>Resposta Correta:</p> <input type="text" name="r6" aria-required="true" required> <br><br>
-	  <input type="submit" value="Enviar">
+    <form action="" method=POST name="formAluno" id="formAluno">
+        <p>Pergunta a ser alterada:</p> <input type="text" name="pergunta" id="pergunta" aria-required="true" required> <br><hr>
+    <h3 style="color:red;">    Novo cadastro: </h3>
+        <p>Pergunta:</p> <input type="text" name="pergunta2" id="pergunta2" aria-required="true" required> <br>
+		<p>Resposta 1:</p> <input type="text" name="r1" id="r1" aria-required="true" required> <br>
+        <p>Resposta 2:</p> <input type="text" name="r2" id="r2" aria-required="true" required> <br>
+		<p>Resposta 3:</p> <input type="text" name="r3" id="r3" aria-required="true" required> <br>
+		<p>Resposta 4: </p><input type="text" name="r4" id="r4" aria-required="true" required> <br>
+		<p>Resposta 5: </p><input type="text" name="r5" id="r5" aria-required="true" required> <br>
+        <p>Resposta Correta:</p> <input type="text" name="r6" id="r6" aria-required="true" required> <br><br>
+	  <input type="button" value="Alterar" onclick="ValidaForm();">
+	  <p id="msg"></p>
   </form>
    </center>
 

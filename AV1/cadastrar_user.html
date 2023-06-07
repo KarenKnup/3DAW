@@ -89,17 +89,74 @@
 	
     <title>GAME PROJECT</title>
     <link rel="stylesheet" href="style.css">
+	
+	<script>		
+        function EnviarUser() {
+            // Obter os valores dos campos de entrada
+            let nome = document.getElementById("nome").value;
+            let cpf = document.getElementById("cpf").value;
+
+            // Criar um objeto XMLHttpRequest para fazer a requisição
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                // Verificar o estado da requisição e o status da resposta
+                if (this.readyState == 4 && this.status == 200) {
+                    // Atualizar o elemento HTML com a resposta recebida
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else if (this.readyState < 4) {
+                    // Ainda carregando a resposta
+                    console.log("3: " + this.readyState);
+                } else {
+                    // A requisição falhou
+                    console.log("Requisicao falhou: " + this.status);
+                }
+            }
+
+            // Construir a URL da requisição com os parâmetros
+            let url = "http://localhost/3DAW/AV1/form_user.php";
+            let params = "nome=" + encodeURIComponent(nome) + "&cpf=" + encodeURIComponent(cpf);
+            
+            // Enviar a requisição GET para a URL com os parâmetros
+            xmlhttp.open("GET", url + "?" + params);
+            xmlhttp.send();
+        }
+
+        function ValidaForm() {
+            // Obter os valores dos campos de entrada
+            let nome = document.getElementById("nome").value;
+            let cpf = document.getElementById("cpf").value;
+            let msg = "";
+
+            // Validar os campos de entrada
+            if (nome == "") {
+                msg = "Nome não preenchido. <br>";
+            } else {
+                if(cpf == ""){
+                    msg = "CPF não preenchido. <br>";
+                } 
+            }
+
+            // Exibir a mensagem de validação no elemento HTML
+            document.getElementById("msg").innerHTML = msg;
+			
+			// Verificar se a validação passou e chamar a função EnviarAluno() se não houver mensagens de erro
+			if (msg == ""){
+				return EnviarUser();
+			}
+        }
+    </script>
   </head>
   
   <body>
   <br>
     <center><h1 style="font-family: 'Syncopate', sans-serif; color: white;">GAME PROJECT</h1>
 	<h1 style="color:lightskyblue;">➜ Incluir um novo usuário  </h1>
-    <form action="form_user.php" method="POST">
-		<p>Nome:</p> <input type="text" name="nome" aria-required="true" required> <br>
-		<p>CPF:</p> <input type="text" name="cpf" aria-required="true" required> <br><br>
-	  <input type="submit" value="Enviar">
-	  </form></center>
+    <form action="" method=POST name="formAluno" id="formAluno">
+		<p>Nome:</p> <input type="text" name="nome" id="nome" aria-required="true" required> <br>
+		<p>CPF:</p> <input type="text" name="cpf" id="cpf" aria-required="true" required> <br><br>
+    <input type="button" value="Inserir" onclick="ValidaForm();">
+	<p id="msg"></p>
+	</form></center>
 
       <a href="index.html" style="font-family: 'Montserrat', sans-serif;color: white;">RETORNAR</a>
 	<br>
