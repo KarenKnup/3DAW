@@ -96,14 +96,65 @@
 	
     <title>GAME PROJECT</title>
     <link rel="stylesheet" href="style.css">
+	
+	<script>		
+        function EnviarEscolha() {
+            // Obter os valores dos campos de entrada
+            let pergunta = document.getElementById("pergunta").value;
+
+            // Criar um objeto XMLHttpRequest para fazer a requisição
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                // Verificar o estado da requisição e o status da resposta
+                if (this.readyState == 4 && this.status == 200) {
+                    // Atualizar o elemento HTML com a resposta recebida
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else if (this.readyState < 4) {
+                    // Ainda carregando a resposta
+                    console.log("3: " + this.readyState);
+                } else {
+                    // A requisição falhou
+                    console.log("Requisicao falhou: " + this.status);
+                }
+            }
+
+            // Construir a URL da requisição com os parâmetros
+            let url = "http://localhost/3DAW/AV1/listar_2_mult.php";
+            let params = "pergunta=" + encodeURIComponent(pergunta);
+            
+            // Enviar a requisição GET para a URL com os parâmetros
+            xmlhttp.open("GET", url + "?" + params);
+            xmlhttp.send();
+        }
+
+        function ValidaForm() {
+            // Obter os valores dos campos de entrada
+            let pergunta = document.getElementById("pergunta").value;
+            let msg = "";
+
+            // Validar os campos de entrada
+            if (pergunta == "") {
+                msg = "Pergunta não preenchida. <br>";
+            }
+
+            // Exibir a mensagem de validação no elemento HTML
+            document.getElementById("msg").innerHTML = msg;
+			
+			// Verificar se a validação passou e chamar a função EnviarAluno() se não houver mensagens de erro
+			if (msg == ""){
+				return EnviarEscolha();
+			}
+        }
+    </script>
   </head>
 
 <body>
   <center><h1 style="font-family: 'Syncopate', sans-serif; color: white;">GAME PROJECT</h1>
   <h2 style="color:lightskyblue;">Ler os dados de uma pergunta e resposta de múltipla escolha</h2>
-  <form action="listar_2_mult.php" method="POST">
-    <p>Pergunta:</p> <input type="text" name="pergunta"> <br><br>   
-  <input type="submit" value="Enviar">
+  <form action="" method=POST name="formAluno" id="formAluno">
+    <p>Pergunta:</p> <input type="text" name="pergunta" id="pergunta" aria-required="true" required> <br><br> 
+  <input type="button" value="Listar" onclick="ValidaForm();">
+  <p id="msg"></p>
   </form></center>
   <br>
   <a href="listar1.html" style="font-family: 'Montserrat', sans-serif;color: white;">RETORNAR</a>
