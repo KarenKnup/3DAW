@@ -1,48 +1,31 @@
 <?php
-$Alunos = fopen ("alunosNovos.txt", "r") or die ("Erro ao ler arquivo!");
-   
-      $temp=fopen(filename: "temp.txt", mode:"w+") or die("Erro ao criar arquivo!");
-      $c = explode(";", fgets($Alunos));
-      while(!feof($Alunos)){
-        $linha = $c[0] . ";" . $c[1] . ";" . $c[2] ;
-        fwrite($temp,$linha);
-        $c = explode(";", fgets($Alunos));
-      }
-      
-      fclose($temp);
-     
-    fclose($Alunos);
+// Estabelecer a conexão com o banco de dados
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "escola";
 
-    $mat="";
-    $matricula="";
-    $nome="";
-    $email="";
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if($_SERVER["REQUEST_METHOD"]=="GET"){
-      $mat = $_GET["mat"];
-      $matricula = $_GET["matricula"];
-      $email = $_GET["email"];
-      $nome = $_GET["nome"];
+    // Atualizar os dados na tabela
+    $mat = $_GET['mat']; // Obtenha o valor da matrícula do aluno a ser alterado
+    $matricula = $_GET['matricula'];
+    $nome = $_GET['nome'];
+    $email = $_GET['email'];
 
-      $Alunos = fopen ("alunosNovos.txt", "w+") or die ("Erro ao abrir arquivo!");
-      $temp = fopen ("temp.txt", "r") or die ("Erro ao ler arquivo!");
-      $c = explode(";", fgets($temp));
-      while(!feof($temp)){
-          if($c[1] == $mat){ 
-            if(!($nome=="") && !($matricula=="") && !($email=="")){
-              $linha = $nome . ";" . $matricula . ";" . $email . "\n";
-            fwrite($Alunos,$linha);
-            }
-          } else {
-              $linha = $c[0] . ";" . $c[1] . ";" . $c[2] ;
-            fwrite($Alunos,$linha);
-          }
-        $c = explode(";", fgets($temp));
-      }
-      fclose($temp);
-      fclose($Alunos);
-      unlink("temp.txt");
-	  echo "Aluno alterado com sucesso!";
-    }
+    $stmt = $conn->prepare("UPDATE alunos SET nome = :nome, matricula = :matricula, email = :email WHERE matricula = :mat");
+    $stmt->bindParam(':matricula', $matricula);
+    $stmt->bindParam(':nome', $nome);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':mat', $mat);
+    $stmt->execute();
 
-?>  
+    echo "Aluno alterado com sucesso!";
+} catch (PDOException $e) {
+    echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+}
+
+$conn = null;
+?>

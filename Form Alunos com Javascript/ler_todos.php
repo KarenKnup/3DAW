@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Exibir Alunos</title>
-   <style>
+    <style>
         th, td {
           border: 1px solid;
           padding: 5px;
@@ -19,35 +20,45 @@
 <a href="deletar.html">Excluir Aluno</a><br>
 <br><br>
 <?php
-        $Alunos = fopen ("alunosNovos.txt", "r") or die ("Erro ao ler arquivo!");
-        if(!(file_exists("alunosNovos.txt"))){
-          echo "<h1>Turma vazia!</h1>";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "escola";
+
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $conn->query("SELECT * FROM alunos");
+
+    $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($alunos) {
+        echo "<table>";
+        echo "<tr>";
+        echo "<th>Matrícula</th>";
+        echo "<th>Nome</th>";
+        echo "<th>Email</th>";
+        echo "</tr>";
+
+        foreach ($alunos as $aluno) {
+            echo "<tr>";
+            echo "<td>" . $aluno['matricula'] . "</td>";
+            echo "<td>" . $aluno['nome'] . "</td>";
+            echo "<td>" . $aluno['email'] . "</td>";
+            echo "</tr>";
         }
-        $cabecalho = explode(";", fgets($Alunos));
-      ?>
-    
-    <table>
-       <tr>
-        <th class="th"> <?php echo $cabecalho[0] ?> </th>
-        <th class="th"> <?php echo $cabecalho[1] ?> </th>
-        <th class="th"> <?php echo $cabecalho[2] ?> </th>
-      </tr>
-      <?php
-         while(!feof($Alunos)){
-           $c = explode(";", fgets($Alunos));
-           if(!empty($c[0]) && !empty($c[1]) && !empty($c[2])){   
-              echo "<tr>";
-                  for($i=0; $i<count($c); $i++){
-                    echo "<th>";
-                    echo $c[$i];
-                    echo "</th>";
-                  }
-              echo "</tr>"; 
-           }
-         }
-          fclose($Alunos);
-      ?>
-    </table>
+
+        echo "</table>";
+    } else {
+        echo "<h1>Nenhum aluno encontrado!</h1>";
+    }
+} catch (PDOException $e) {
+    echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+}
+
+$conn = null;
+?>
 <br>
 </body>
 </html>
