@@ -1,44 +1,29 @@
 <?php
-	  $Escritas = fopen ("escritas.txt", "r") or die ("Erro ao ler arquivo!");
-      $temp=fopen(filename: "temp.txt", mode:"w+") or die("Erro ao criar arquivo!");
-      $c = explode(";", fgets($Escritas));
-      while(!feof($Escritas)){
-        $linha = $c[0] . ";" . $c[1] ;
-        fwrite($temp,$linha);
-        $c = explode(";", fgets($Escritas));
-      }
-      
-      fclose($temp);     
-      fclose($Escritas);
+// Estabelecer a conexão com o banco de dados
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "av1";
 
-    $pergunta="";
-    $pergunta2="";
-    $r1="";
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if($_SERVER["REQUEST_METHOD"]=="GET"){
-      $pergunta = $_GET["pergunta"];
-      $pergunta2 = $_GET["pergunta2"];
-      $r1 = $_GET["r1"];
+    // Atualizar os dados na tabela
+    $pergunta = $_GET['pergunta']; // Obtenha a pergunta a ser alterada
+    $pergunta2 = $_GET['pergunta2'];
+    $r1 = $_GET['r1'];
 
-      $Escritas = fopen ("escritas.txt", "w+") or die ("Erro ao abrir arquivo!");
-      $temp = fopen ("temp.txt", "r") or die ("Erro ao ler arquivo!");
-      $c = explode(";", fgets($temp));
-      while(!feof($temp)){
-          if($c[0] == $pergunta){ 
-            if(!($pergunta2=="") && !($r1=="")){
-              $linha = $pergunta2 . ";" . $r1 . "\n";
-            fwrite($Escritas,$linha);
-            }
-          } else {
-              $linha = $c[0] . ";" . $c[1] ;
-            fwrite($Escritas,$linha);
-          }
-        $c = explode(";", fgets($temp));
-      }
-      fclose($temp);
-      fclose($Escritas);
-      unlink("temp.txt");
-	  echo "Pergunta escrita alterada com sucesso!";
-    }
+    $stmt = $conn->prepare("UPDATE escritas SET pergunta = :pergunta2, resposta = :r1 WHERE pergunta = :pergunta");
+    $stmt->bindParam(':pergunta', $pergunta);
+    $stmt->bindParam(':pergunta2', $pergunta2);
+    $stmt->bindParam(':r1', $r1);
+    $stmt->execute();
 
-?>  
+    echo "Pergunta alterada com sucesso!";
+} catch (PDOException $e) {
+    echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+}
+
+$conn = null;
+?>

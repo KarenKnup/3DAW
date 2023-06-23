@@ -1,36 +1,39 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $nome = $_GET["nome"];
     $cpf = $_GET["cpf"];
+    $nome = $_GET["nome"];
 
-//  Vou escrever os dados do formulário em um arquivo de dados já existente
-    if (!file_exists("users.txt")) {
-        $cabecalho = "CPF;Nome\n";
-        file_put_contents("users.txt", $cabecalho);
-		$txt = $cpf . ";" . $nome . "\n";
-		file_put_contents("users.txt", $txt, FILE_APPEND);
-		echo "Usuário inserido com sucesso!";
-    } else {
-		$Users = fopen ("users.txt", "r") or die ("Erro ao ler arquivo!");
-		$existe = false; 
-	    $c = explode(";", fgets($Users));
-		  while(!feof($Users)){
-			if($c[0] == $cpf){
-				$existe = true;
-			}
-			$c = explode(";", fgets($Users));
-		  }		
-		  
-		  if($existe == false){
-			$txt = $cpf . ";" . $nome . "\n";
-			file_put_contents("users.txt", $txt, FILE_APPEND);
-			echo "Usuário inserido com sucesso!";
-		  } else {
-			  echo "CPF já registrado!";
-		  }
-		  
-			fclose($Users);
-	}
+    // Estabelecer a conexão com o banco de dados
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "av1";
+
+    try {
+        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Verificar se o CPF já existe no banco de dados
+        $stmt = $conn->prepare("SELECT * FROM users WHERE cpf = :cpf");
+        $stmt->bindParam(":cpf", $cpf);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            echo "CPF já registrado!";
+        } else {
+            // Inserir o usuário no banco de dados
+            $stmt = $conn->prepare("INSERT INTO users (cpf, nome) VALUES (:cpf, :nome)");
+            $stmt->bindParam(":cpf", $cpf);
+            $stmt->bindParam(":nome", $nome);
+            $stmt->execute();
+
+            echo "Usuário inserido com sucesso!";
+        }
+    } catch (PDOException $e) {
+        echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+    }
+
+    $conn = null;
 }
-
 ?>

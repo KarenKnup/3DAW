@@ -1,54 +1,39 @@
 <?php
-	  $Multiplas = fopen ("multiplas.txt", "r") or die ("Erro ao ler arquivo!");
-      $temp=fopen(filename: "temp.txt", mode:"w+") or die("Erro ao criar arquivo!");
-      $c = explode(";", fgets($Multiplas));
-      while(!feof($Multiplas)){
-        $linha = $c[0] . ";" . $c[1] . ";" . $c[2] . ";" . $c[3] . ";" . $c[4] . ";" . $c[5] . ";" . $c[6] ;
-        fwrite($temp,$linha);
-        $c = explode(";", fgets($Multiplas));
-      }
-      
-      fclose($temp);     
-      fclose($Multiplas);
+// Estabelecer a conexão com o banco de dados
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "av1";
 
-    $pergunta = "";
-	$pergunta2 = "";
-    $r1 = "";
-    $r2 = "";
-    $r3 = "";
-    $r4 = "";
-    $r5 = "";
-    $r6 = "";
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if($_SERVER["REQUEST_METHOD"]=="GET"){
-      $pergunta = $_GET["pergunta"];
-      $pergunta2 = $_GET["pergunta2"];
-      $r1 = $_GET["r1"];
-      $r2 = $_GET["r2"];
-      $r3 = $_GET["r3"];
-      $r4 = $_GET["r4"];
-      $r5 = $_GET["r5"];
-      $r6 = $_GET["r6"];
+    // Atualizar os dados na tabela
+    $pergunta = $_GET['pergunta']; // Obtenha a pergunta a ser alterada
+    $pergunta2 = $_GET['pergunta2'];
+    $r1 = $_GET['r1'];
+	$r2 = $_GET['r2'];
+	$r3 = $_GET['r3'];
+	$r4 = $_GET['r4'];
+	$r5 = $_GET['r5'];
+	$r6 = $_GET['r6'];
 
-      $Multiplas = fopen ("multiplas.txt", "w+") or die ("Erro ao abrir arquivo!");
-      $temp = fopen ("temp.txt", "r") or die ("Erro ao ler arquivo!");
-      $c = explode(";", fgets($temp));
-      while(!feof($temp)){
-          if($c[0] == $pergunta){ 
-            if(!($pergunta2=="") && !($r1=="") && !($r2=="") && !($r3=="") && !($r4=="") && !($r5=="") && !($r6=="")){
-              $linha = $pergunta2 . ";" . $r1 . ";" . $r2 . ";" . $r3 . ";" . $r4 . ";" . $r5 . ";" . $r6 . "\n";
-            fwrite($Multiplas,$linha);
-            }
-          } else {
-              $linha = $c[0] . ";" . $c[1] . ";" . $c[2] . ";" . $c[3] . ";" . $c[4] . ";" . $c[5] . ";" . $c[6] ;
-            fwrite($Multiplas,$linha);
-          }
-        $c = explode(";", fgets($temp));
-      }
-      fclose($temp);
-      fclose($Multiplas);
-      unlink("temp.txt");
-	  echo "Pergunta de múltipla escolha alterada com sucesso!";
-    }
+    $stmt = $conn->prepare("UPDATE multiplas SET pergunta = :pergunta2, resposta_1 = :r1, resposta_2 = :r2, resposta_3 = :r3, resposta_4 = :r4, resposta_5 = :r5, resposta = :r6 WHERE pergunta = :pergunta");
+    $stmt->bindParam(':pergunta', $pergunta);
+    $stmt->bindParam(':pergunta2', $pergunta2);
+    $stmt->bindParam(':r1', $r1);
+	$stmt->bindParam(':r2', $r2);
+	$stmt->bindParam(':r3', $r3);
+	$stmt->bindParam(':r4', $r4);
+	$stmt->bindParam(':r5', $r5);
+	$stmt->bindParam(':r6', $r6);
+    $stmt->execute();
 
-?>  
+    echo "Pergunta alterada com sucesso!";
+} catch (PDOException $e) {
+    echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+}
+
+$conn = null;
+?>

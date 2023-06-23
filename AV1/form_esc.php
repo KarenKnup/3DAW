@@ -1,38 +1,39 @@
-<?php	
-	$pergunta = "";
-    $r1 = "";
+<?php
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $pergunta = $_GET["pergunta"];
     $r1 = $_GET["r1"];
 
-//  Vou escrever os dados do formulário em um arquivo de dados já existente
-    if (!file_exists("escritas.txt")) {
-        $cabecalho = "Pergunta;Resposta\n";
-        file_put_contents("escritas.txt", $cabecalho);
-		$txt = $pergunta . ";" . $r1 . "\n";
-		file_put_contents("escritas.txt", $txt, FILE_APPEND);
-		echo "Pergunta escrita inserida com sucesso!";
-    } else {
-		$Escritas = fopen ("escritas.txt", "r") or die ("Erro ao ler arquivo!");
-		$existe = false; 
-	    $c = explode(";", fgets($Escritas));
-		  while(!feof($Escritas)){
-			if($c[0] == $pergunta){
-				$existe = true;
-			}
-			$c = explode(";", fgets($Escritas));
-		  }		
-		  
-		  if($existe == false){
-     		$txt = $pergunta . ";" . $r1 . "\n";
-			file_put_contents("escritas.txt", $txt, FILE_APPEND);
-			echo "Pergunta escrita inserida com sucesso!";
-		  } else {
-			  echo "Pergunta já registrada!";
-		  }
-		  
-			fclose($Escritas);
-	}
-}
+    // Estabelecer a conexão com o banco de dados
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "av1";
 
+    try {
+        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Verificar se a pergunta já existe no banco de dados
+        $stmt = $conn->prepare("SELECT * FROM escritas WHERE pergunta = :pergunta");
+        $stmt->bindParam(":pergunta", $pergunta);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            echo "Pergunta já registrada!";
+        } else {
+            // Inserir a pergunta no banco de dados
+            $stmt = $conn->prepare("INSERT INTO escritas (pergunta, resposta) VALUES (:pergunta, :r1)");
+            $stmt->bindParam(":pergunta", $pergunta);
+            $stmt->bindParam(":r1", $r1);
+            $stmt->execute();
+
+            echo "Pergunta inserida com sucesso!";
+        }
+    } catch (PDOException $e) {
+        echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+    }
+
+    $conn = null;
+}
 ?>

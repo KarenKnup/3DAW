@@ -94,36 +94,45 @@
   
   <body>
     <center><h2 style="color:lightskyblue;">➜ Listagem de todas as perguntas e respostas escritas</h2></center>
-      <?php
-        $Escrita = fopen ("escritas.txt", "r") or die ("Erro ao ler arquivo!");
-        if(!(file_exists("escritas.txt"))){
-          echo "<h1>Não há perguntas e respostas escritas!</h1>";
-        }
-        $cabecalho = explode(";", fgets($Escrita));
-      ?>
-
     <center>
-      <table>
-         <tr>
-          <th class="th"> <?php echo $cabecalho[0] ?> </th>
-          <th class="th"> <?php echo $cabecalho[1] ?> </th>
-        </tr>
-        <?php
-           while(!feof($Escrita)){
-             $c = explode(";", fgets($Escrita));
-             if(!empty($c[0]) && !empty($c[1])){   
-                echo "<tr>";
-                    for($i=0; $i<count($c); $i++){
-                      echo "<th>";
-                      echo $c[$i];
-                      echo "</th>";
-                    }
-                echo "</tr>"; 
-             }
-           }
-            fclose($Escrita);
-        ?>
-      </table>
+      <?php
+		$servername = "localhost";
+		$username = "root";
+		$password = "";
+		$dbname = "av1";
+
+		try {
+			$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$stmt = $conn->query("SELECT * FROM escritas");
+
+			$perguntas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if ($perguntas) {
+				echo "<table>";
+				echo "<tr>";
+				echo "<th>Pergunta</th>";
+				echo "<th>Resposta</th>";
+				echo "</tr>";
+
+				foreach ($perguntas as $pergunta) {
+					echo "<tr>";
+					echo "<td>" . $pergunta['pergunta'] . "</td>";
+					echo "<td>" . $pergunta['resposta'] . "</td>";
+					echo "</tr>";
+				}
+
+				echo "</table>";
+			} else {
+				echo "<h1>Nenhuma pergunta encontrada!</h1>";
+			}
+		} catch (PDOException $e) {
+			echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+		}
+
+		$conn = null;
+		?>
     </center>
     <br>
     <a href="listar1.html" style="font-family: 'Montserrat', sans-serif;color: white;">RETORNAR</a>

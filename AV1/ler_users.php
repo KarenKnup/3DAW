@@ -93,36 +93,46 @@
   </head>
   
   <body>
-<center><h2 style="color:lightskyblue;">➜ Listagem de todos os usuários</h2></center>
-      <?php
-        $Users = fopen ("users.txt", "r") or die ("Erro ao ler arquivo!");
-        if(!(file_exists("users.txt"))){
-          echo "<h1>Não há usuários!</h1>";
-        }
-        $cabecalho = explode(";", fgets($Users));
-      ?>
+<center><h2 style="color:lightskyblue;">➜ Listagem de todos os usuários</h2></center>      
     <center>
-      <table>
-         <tr>
-          <th class="th"> <?php echo $cabecalho[0] ?> </th>
-          <th class="th"> <?php echo $cabecalho[1] ?> </th>
-        </tr>
-        <?php
-           while(!feof($Users)){
-             $c = explode(";", fgets($Users));
-             if(!empty($c[0]) && !empty($c[1])){   
-                echo "<tr>";
-                    for($i=0; $i<count($c); $i++){
-                      echo "<th>";
-                      echo $c[$i];
-                      echo "</th>";
-                    }
-                echo "</tr>"; 
-             }
-           }
-            fclose($Users);
-        ?>
-      </table>
+<?php
+		$servername = "localhost";
+		$username = "root";
+		$password = "";
+		$dbname = "av1";
+
+		try {
+			$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$stmt = $conn->query("SELECT * FROM users");
+
+			$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if ($users) {
+				echo "<table>";
+				echo "<tr>";
+				echo "<th>CPF</th>";
+				echo "<th>Nome</th>";
+				echo "</tr>";
+
+				foreach ($users as $user) {
+					echo "<tr>";
+					echo "<td>" . $user['cpf'] . "</td>";
+					echo "<td>" . $user['nome'] . "</td>";
+					echo "</tr>";
+				}
+
+				echo "</table>";
+			} else {
+				echo "<h1>Nenhum usuário encontrado!</h1>";
+			}
+		} catch (PDOException $e) {
+			echo "Erro de conexão com o banco de dados: " . $e->getMessage();
+		}
+
+		$conn = null;
+		?>	
     </center>
     <br>
     <a href="listar1.html" style="font-family: 'Montserrat', sans-serif;color: white;">RETORNAR</a>

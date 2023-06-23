@@ -11,27 +11,42 @@
 	  
 	<body>
 	<?php
-	  $pergunta = "";
-	  $r1="";
-	  if($_SERVER["REQUEST_METHOD"]=="GET"){
-		  $pergunta = $_GET["pergunta"];
-		$Escritas = fopen ("escritas.txt", "r") or die ("Erro ao ler arquivo!");
-			while(!feof($Escritas)){
-			  $c = explode(";", fgets($Escritas));
-			  if($c[0] == $pergunta && !empty($c[1])){ #usar $pergunta aqui
-				$r1=$c[1];
-				 break;
-			  }
+		$servername = "localhost";
+		$username = "root";
+		$password = "";
+		$dbname = "av1";
+
+		try {
+			$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			$pergunta = $_GET["pergunta"]; // Obter a pergunta desejada
+
+			$stmt = $conn->prepare("SELECT * FROM escritas WHERE pergunta = :pergunta");
+			$stmt->bindParam(':pergunta', $pergunta);
+			$stmt->execute();
+
+			$escritas = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			if ($escritas) {
+				echo "<table>";
+				echo "<tr>";
+				echo "<th>Pergunta</th>";
+				echo "<th>Resposta</th>";
+				echo "</tr>";
+				echo "<tr>";
+				echo "<td>" . $escritas['pergunta'] . "</td>";
+				echo "<td>" . $escritas['resposta'] . "</td>";
+				echo "</tr>";
+				echo "</table>";
+			} else {
+				echo "<h1>Pergunta não encontrada!</h1>";
 			}
-	  }
-		if(!empty($pergunta) && !empty($r1)){
-		  echo "<center><table><tr><th>Pergunta</th><th>Resposta</th></tr>";
-		  echo "<tr><th>" . $pergunta . "</th>";
-		  echo "<th>" . $r1 . "</th></tr></table></center>";
-		}else{
-		  echo "<center><h3>Essa pergunta não existe! </h3></center>";
+		} catch (PDOException $e) {
+			echo "Erro de conexão com o banco de dados: " . $e->getMessage();
 		}
-		
-	?>
+
+		$conn = null;
+		?>
 	</body>
 </html>
