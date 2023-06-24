@@ -15,10 +15,11 @@ try {
     $stmt->bindParam(':matricula', $matricula);
     $stmt->execute();
 
-    echo "Aluno removido com sucesso!";
+    $conn = null;
+
+    echo "<script>window.location.replace('ler_todos.php');</script>"; // Redireciona a página para si mesma (recarregar)
+    exit();
 } catch (PDOException $e) {
     echo "Erro de conexão com o banco de dados: " . $e->getMessage();
 }
-
-$conn = null;
 ?>
