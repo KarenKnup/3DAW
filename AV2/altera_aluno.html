@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>KEYFALLS</title>
+    <script>
+        function EnviarAluno() {
+            // Obter os valores dos campos de entrada
+            let cpf = document.getElementById("matricula").value;
+            let sala = document.getElementById("sala").value;
+
+            // Criar um objeto XMLHttpRequest para fazer a requisição
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                // Verificar o estado da requisição e o status da resposta
+                if (this.readyState == 4 && this.status == 200) {
+                    // Atualizar o elemento HTML com a resposta recebida
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else if (this.readyState < 4) {
+                    // Ainda carregando a resposta
+                    console.log("3: " + this.readyState);
+                } else {
+                    // A requisição falhou
+                    console.log("Requisicao falhou: " + this.status);
+                }
+            }
+
+            // Construir a URL da requisição com os parâmetros
+            let url = "http://localhost/AV2/altera_aluno.php";
+            let params = "cpf=" + encodeURIComponent(cpf) + "&sala=" + encodeURIComponent(sala);
+            
+            // Enviar a requisição GET para a URL com os parâmetros
+            xmlhttp.open("GET", url + "?" + params);
+            xmlhttp.send();
+        }
+
+        function ValidaForm() {
+            // Obter os valores dos campos de entrada
+			let cpf = document.getElementById("cpf").value;
+            let sala = document.getElementById("sala").value;
+            let msg = "";
+
+            // Validar os campos de entrada
+            if (cpf == "") {
+                msg = "CPF não preenchido. <br>";
+            } else {
+                if(sala == ""){
+                    msg = "Sala não preenchida. <br>";
+                }
+            }
+
+            // Exibir a mensagem de validação no elemento HTML
+            document.getElementById("msg").innerHTML = msg;
+			
+			// Verificar se a validação passou e chamar a função EnviarAluno() se não houver mensagens de erro
+			if (msg == ""){
+				return EnviarAluno();
+			}
+        }
+    </script>
+</head>
+<body>
+<form action="" method=POST name="formAluno" id="formAluno">
+	CPF do candidato a ser alterado: <input type="text" name="cpf" id="cpf" required> <br>
+	<h3 style="color:red;">    Novos dados do aluno: </h3>    
+    Sala: <input type="text" name="sala" id="sala" required> <br>
+    <br><br>
+    <input type="button" value="Alterar" onclick="ValidaForm();">
+</form>
+<p id="msg"></p>
+<br>
+<a href="listar.php">Voltar para a página inicial</a>
+</body>
+</html>
