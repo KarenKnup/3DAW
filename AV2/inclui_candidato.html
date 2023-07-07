@@ -1,0 +1,141 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>KEYFALLS</title>
+    <style>
+      body {
+        font-family: 'Syncopate', sans-serif;
+        background-color: #f1f1f1;
+        margin: 0;
+        padding: 20px;
+      }
+      
+      h1 {
+        color: black;
+        text-align: center;
+        margin-top: 0;
+      }
+      
+      .middle {
+        text-align: center;
+        margin-top: 30px;
+      }
+      
+      .middle a {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+        color: #333;
+        text-decoration: none;
+      }
+      
+      .middle a:hover {
+        color: #555;
+      }
+    </style>
+	
+	<script>		
+        function EnviarCandidato() {
+            // Obter os valores dos campos de entrada
+            let nome = document.getElementById("nome").value;
+            let cpf = document.getElementById("cpf").value;
+			let email = document.getElementById("email").value;
+			let identidade = document.getElementById("identidade").value;
+			let cargo = document.getElementById("cargo").value;
+			let sala = document.getElementById("sala").value;
+
+            // Criar um objeto XMLHttpRequest para fazer a requisição
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                // Verificar o estado da requisição e o status da resposta
+                if (this.readyState == 4 && this.status == 200) {
+                    // Atualizar o elemento HTML com a resposta recebida
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else if (this.readyState < 4) {
+                    // Ainda carregando a resposta
+                    console.log("3: " + this.readyState);
+                } else {
+                    // A requisição falhou
+                    console.log("Requisicao falhou: " + this.status);
+                }
+            }
+
+            // Construir a URL da requisição com os parâmetros
+            let url = "http://localhost/3DAW/AV2/form_candidato.php";
+            let params = "nome=" + encodeURIComponent(nome) + "&cpf=" + encodeURIComponent(cpf) + "&email=" + encodeURIComponent(email) + "&identidade=" + encodeURIComponent(identidade) + "&cargo=" + encodeURIComponent(cargo)+ "&sala=" + encodeURIComponent(sala);
+            
+            // Enviar a requisição GET para a URL com os parâmetros
+            xmlhttp.open("GET", url + "?" + params);
+            xmlhttp.send();
+        }
+
+        function ValidaForm() {
+            // Obter os valores dos campos de entrada
+            let nome = document.getElementById("nome").value;
+            let cpf = document.getElementById("cpf").value;
+			let email = document.getElementById("email").value;
+			let identidade = document.getElementById("identidade").value;
+			let cargo = document.getElementById("cargo").value;
+			let sala = document.getElementById("sala").value;
+            let msg = "";
+
+            // Validar os campos de entrada
+            if (nome == "") {
+                msg = "Nome não preenchido. <br>";
+            } else {
+                if(cpf == ""){
+                    msg = "CPF não preenchido. <br>";
+                } else {
+					if(email == ""){
+						msg = "Email não preenchido. <br>";
+					} else {
+							if(identidade == ""){
+							msg = "Identidade não preenchida. <br>";
+						} else {
+							if(cargo == ""){
+								msg = "Cargo pretendido não preenchido. <br>";
+							} else {
+									if(sala == ""){
+									msg = "Sala de prova não preenchida. <br>";
+								} 
+							}
+						}
+					}
+				}
+            }
+
+            // Exibir a mensagem de validação no elemento HTML
+            document.getElementById("msg").innerHTML = msg;
+			
+			// Verificar se a validação passou e chamar a função EnviarCandidato() se não houver mensagens de erro
+			if (msg == ""){
+				return EnviarCandidato();
+			}
+        }
+    </script>
+  </head>
+  
+  <body>
+  <br>
+    <center><h1>KEYFALLS</h1></center>
+    <div class="middle">
+		<form action="" method=POST name="formCandidato" id="formCandidato">
+			<p>Nome:</p> <input type="text" name="nome" id="nome" aria-required="true" required> <br>
+			<p>CPF:</p> <input type="text" name="cpf" id="cpf" aria-required="true" required> <br>
+			<p>Email:</p> <input type="email" name="email" id="email" aria-required="true" required> <br>
+			<p>Identidade:</p> <input type="text" name="identidade" id="identidade" aria-required="true" required> <br>
+			<p>Cargo pretendido:</p> <input type="text" name="cargo" id="cargo" aria-required="true" required> <br>
+			<p>Sala de prova:</p> <input type="text" name="sala" id="sala" aria-required="true" required> <br>
+			<br>
+		<input type="button" value="Inserir" onclick="ValidaForm();">
+		<p id="msg"></p>
+		</form>
+	</div>
+
+      <a href="index.html" style="font-family: 'Montserrat', sans-serif;color: black;">RETORNAR</a>
+	<br>
+  </body>
+</html>
