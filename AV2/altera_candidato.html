@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>KEYFALLS</title>
+    <style>
+      body {
+        font-family: 'Syncopate', sans-serif;
+        background-color: #f1f1f1;
+        margin: 0;
+        padding: 20px;
+      }
+      
+      h1 {
+        color: black;
+        text-align: center;
+        margin-top: 0;
+      }
+      
+      .middle {
+        text-align: center;
+        margin-top: 30px;
+      }
+      
+      .middle a {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+        color: #333;
+        text-decoration: none;
+      }
+      
+      .middle a:hover {
+        color: #555;
+      }
+    </style>
+	
+	<script>		
+        function EnviarCandidato() {
+            // Obter os valores dos campos de entrada
+            let cpf = document.getElementById("cpf").value;
+            let sala = document.getElementById("sala").value;
+			let sala2 = document.getElementById("sala2").value;			
+
+            // Criar um objeto XMLHttpRequest para fazer a requisição
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                // Verificar o estado da requisição e o status da resposta
+                if (this.readyState == 4 && this.status == 200) {
+                    // Atualizar o elemento HTML com a resposta recebida
+                    document.getElementById("msg").innerHTML = this.responseText;
+                } else if (this.readyState < 4) {
+                    // Ainda carregando a resposta
+                    console.log("3: " + this.readyState);
+                } else {
+                    // A requisição falhou
+                    console.log("Requisicao falhou: " + this.status);
+                }
+            }
+
+            // Construir a URL da requisição com os parâmetros
+            let url = "http://localhost/3DAW/AV2/form_altera_candidato.php";
+            let params = "cpf=" + encodeURIComponent(cpf) + "&sala=" + encodeURIComponent(sala) + "&sala2=" + encodeURIComponent(sala2);
+            
+            // Enviar a requisição GET para a URL com os parâmetros
+            xmlhttp.open("GET", url + "?" + params);
+            xmlhttp.send();
+        }
+
+        function ValidaForm() {
+            // Obter os valores dos campos de entrada
+            let sala = document.getElementById("sala").value;
+            let cpf = document.getElementById("cpf").value;
+			let sala2 = document.getElementById("sala2").value;
+            let msg = "";
+
+            // Validar os campos de entrada
+            if (sala == "") {
+                msg = "Sala atual não preenchida. <br>";
+            } else {
+                if(cpf == ""){
+                    msg = "CPF não preenchido. <br>";
+                } else {
+					if(sala2 == ""){
+						msg = "Nova sala não preenchida. <br>";
+					} 
+					
+				}
+            }
+
+            // Exibir a mensagem de validação no elemento HTML
+            document.getElementById("msg").innerHTML = msg;
+			
+			// Verificar se a validação passou e chamar a função EnviarCandidato() se não houver mensagens de erro
+			if (msg == ""){
+				return EnviarCandidato();
+			}
+        }
+    </script>
+  </head>
+  
+  <body>
+  <br>
+    <center><h1>KEYFALLS</h1></center>
+    <div class="middle">
+		<form action="" method=POST name="formCandidato" id="formCandidato">
+			<p>CPF do candidato:</p> <input type="text" name="cpf" id="cpf" aria-required="true" required> <br>
+			<p>Sala de prova atual:</p> <input type="text" name="sala" id="sala" aria-required="true" required> <br><hr>
+		<h3 style="color:red;">    Novo cadastro: </h3>
+			<p>Mudar o candidato para a sala: </p><input type="text" name="sala2" id="sala2" aria-required="true" required> <br><br>
+		<input type="button" value="Alterar" onclick="ValidaForm();">
+		<p id="msg"></p>
+		</form>
+	</div>
+
+      <a href="index.html" style="font-family: 'Montserrat', sans-serif;color: black;">RETORNAR</a>
+	<br>
+  </body>
+</html>
