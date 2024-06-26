@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LembreteDiario</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="contentView">
+        <div class="container">
+            <div class="ContainerTitulo">
+                <h1 class="titleText">LembreteDiario</h1>
+            </div>
+            <div>
+                <form action="php/login.php" method="POST">
+                    <input 
+                        type="text" 
+                        class="loginTextField" 
+                        placeholder="Usuário" 
+                        name="email"
+                    />
+                    <input 
+                        type="password" 
+                        class="loginTextField" 
+                        placeholder="Senha" 
+                        name="senha"
+                    />
+                    <button type="submit" class="Botao primary">Login</button>
+                </form>
+            </div>
+            <a href="Pages/Registrar.html"><button class="Botao secondary">Registre-se</button></a>
+        </div>
+    </div>
+</body>
+</html>
